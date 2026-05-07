@@ -95,15 +95,32 @@ body {
      largest viewport height and would otherwise overflow. */
   min-height: 100svh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: 0 1.5rem 8vh;
+  padding: 0 1.5rem;
   background: var(--bg);
+  position: relative;
   /* To add a background image:
      background-image: url('assets/hero.jpg');
      background-size: cover;
      background-position: center;
   */
+}
+
+.hero-detention-outline {
+  position: absolute;
+  top: 57%;
+  left: 50%;
+  /* +11% offsets the artwork's internal left-bias inside ice.svg's viewBox. */
+  transform: translate(calc(-50% + 11%), -50%);
+  width: min(1400px, 100vw);
+  max-width: none;
+  height: auto;
+  z-index: 1;
+  opacity: 0.58;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 10px rgba(250, 169, 22, 0.28));
+  pointer-events: none;
 }
 
 .hero-overlay {
@@ -123,6 +140,7 @@ body {
   z-index: 3;
   max-width: var(--col-width);
   text-align: center;
+  margin-top: 5vh;
 }
 
 .hero-kicker {
@@ -170,7 +188,10 @@ body {
 }
 
 .scroll-indicator {
-  margin-top: 3rem;
+  position: absolute;
+  bottom: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -764,6 +785,11 @@ body {
 @media (max-width: 768px) {
   html {
     font-size: 16px;
+  }
+
+  .hero-detention-outline {
+    width: 140vw;
+    opacity: 0.45;
   }
 
   .block-hero {
