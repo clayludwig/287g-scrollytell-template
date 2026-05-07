@@ -1,10 +1,8 @@
 # 287g-scrollytell-template
 
-A modular HTML/CSS/JS template for building journalistic scrollytell stories. No build step. Drop it on any static host (GitHub Pages, Netlify, Vercel, S3) and edit the HTML.
+A modular HTML/CSS/JS template for building journalistic scrollytell stories.
 
-Inspired by long-form data investigations in the *New York Times*, *Washington Post*, and *The Pudding*. Dark-theme by default, with a single accent color and a serif body face.
-
-**Dependencies:** Google Fonts (Poppins + Source Serif Pro) and [scrollama](https://github.com/russellsamora/scrollama) (~3KB), both loaded from CDN. The block fade engine uses `IntersectionObserver` directly — no library.
+**Dependencies:** Google Fonts (Poppins + Source Serif Pro) and [scrollama](https://github.com/russellsamora/scrollama) (~3KB), both loaded from CDN. The block fade engine uses `IntersectionObserver` directly.
 
 ## Quick start
 
@@ -66,8 +64,4 @@ See `blocks/README.md` for snippets and `design.md` for anatomy + rules.
 
 ## Credits
 
-Designed and built by [Clay Ludwig](https://github.com/clayludwig) and [Ela Jalil](https://github.com/ejalil). Originally developed for a Capital News Service investigation at the University of Maryland Philip Merrill College of Journalism.
-
-## License
-
-MIT. See `LICENSE`.
+Designed and built by [Clay Ludwig](https://github.com/clayludwig) and [Ela Jalil](https://github.com/ejalil).
