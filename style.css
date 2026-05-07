@@ -1,0 +1,893 @@
+/* ============================================
+   SCROLLYTELL TEMPLATE — STYLE SYSTEM
+   Dark theme, journalistic design.
+   See design.md for tokens, type scale, and block guidance.
+   ============================================ */
+
+/* --- RESET & BASE --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Surfaces */
+  --bg: #0a0a0a;
+  --bg-elevated: #141414;
+  --bg-card: #1a1a1a;
+
+  /* Text */
+  --text: #e8e6e3;
+  --text-muted: #9a9a9a;
+  --text-dim: #6a6a6a;
+
+  /* Accents — swap to rebrand */
+  --accent: #faa916;
+  --accent-dim: rgba(250, 169, 22, 0.15);
+  --blue: #1979b9;
+  --red: #c71e1d;
+
+  /* Lines */
+  --border: #2a2a2a;
+
+  /* Layout */
+  --col-width: 680px;   /* body-text column */
+  --col-wide: 960px;    /* charts, explainer grids */
+
+  /* Type */
+  --font-serif: 'Source Serif Pro', serif;
+  --font-sans: 'Poppins', 'BlinkMacSystemFont', -apple-system, 'Roboto', 'Lucida Sans', sans-serif;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 150%;
+  overflow-x: hidden;
+}
+
+/* --- SCROLL-DRIVEN VISIBILITY ---
+   Block fade-in is gated behind .js so that no-JS readers see
+   content immediately (rather than a wall of opacity:0).
+   IntersectionObserver in script.js adds .is-visible when the
+   element enters view; CSS handles the actual transition.
+   `will-change` is intentionally omitted — promoting every
+   block to its own compositor layer permanently is a memory
+   cost we don't need.
+   -------------------------------------------- */
+.js [data-scroll="fade-up"] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.js [data-scroll="fade"] {
+  opacity: 0;
+  transition: opacity 0.7s ease-out;
+}
+
+.js [data-scroll].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- SHARED BLOCK SPACING --- */
+.block {
+  position: relative;
+}
+
+/* ============================================
+   BLOCK: HERO
+   ============================================ */
+.block-hero {
+  isolation: isolate;
+  /* Use svh (small viewport height) so on iOS Safari the hero
+     fits in view when the address bar is showing — `vh` is the
+     largest viewport height and would otherwise overflow. */
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1.5rem 8vh;
+  background: var(--bg);
+  /* To add a background image:
+     background-image: url('assets/hero.jpg');
+     background-size: cover;
+     background-position: center;
+  */
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0.3) 0%,
+    rgba(10, 10, 10, 0.85) 70%,
+    rgba(10, 10, 10, 1) 100%
+  );
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: var(--col-width);
+  text-align: center;
+}
+
+.hero-kicker {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.hero-headline {
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-subhead {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.hero-byline {
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.hero-date {
+  font-family: var(--font-sans);
+  font-size: 0.7em;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+.scroll-indicator {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.scroll-indicator span {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.scroll-arrow {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--text-dim), transparent);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
+   BLOCK: SCROLLYTELLING - PEOPLE GRID
+   Sticky stat + figures vertically centered on the viewport,
+   with text steps that scroll past as their own elements over
+   the sticky. Cards have a translucent backdrop-blur background
+   so they remain readable when they overlap the figures.
+
+   Layout math:
+   - .scrolly-sticky is 100svh tall and pins at top: 0, so its
+     stat + figures group (flex column, justify-content: center)
+     stays vertically centered on the viewport.
+   - .scrolly-steps has margin-top: -100svh so the first step
+     starts at the section top and the first card is visible
+     immediately when the reader enters the section.
+   - Each .step is 100svh tall; its card sits in the lower half
+     (align-items: flex-end with padding-bottom: 8svh).
+   - scrollama fires onStepEnter when each .step-card's top
+     crosses the trigger line (offset: 0.6 — just below center).
+   ============================================ */
+.block-scrolly-people {
+  position: relative;
+  padding: 0 1.5rem;
+}
+
+.scrolly-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  max-width: var(--col-wide);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  z-index: 1;
+}
+
+.scrolly-steps {
+  position: relative;
+  margin-top: -100svh;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.step {
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1.5rem 8svh;
+}
+
+.step-card {
+  pointer-events: auto;
+  max-width: 30rem;
+  margin: 0;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem 1.3rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.people-gallery {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: end;
+  width: 100%;
+}
+
+.people-item {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+  /* Default initial state for no-JS / pre-scrollama: hidden.
+     Markup applies .is-highlighted to the first item so something
+     is visible even if scrollama never loads. */
+  opacity: 0.08;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.people-item.is-hidden {
+  opacity: 0.08;
+  transform: translateY(10px);
+}
+
+.people-item.is-highlighted {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.people-item.is-unhighlighted {
+  opacity: 0.3;
+  transform: translateY(0);
+}
+
+.people-custom-svg {
+  width: min(72px, 100%);
+  height: auto;
+  display: block;
+  opacity: 0.95;
+}
+
+/* ============================================
+   BLOCK: TEXT
+   ============================================ */
+.block-text {
+  padding: 6rem 1.5rem;
+}
+
+.text-inner {
+  max-width: var(--col-width);
+  margin: 0 auto;
+}
+
+.text-inner p {
+  font-family: var(--font-serif);
+  font-size: 1.25em;
+  line-height: 150%;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+.text-inner p:last-child {
+  margin-bottom: 0;
+}
+
+/* Drop cap for lede */
+.text-dropcap::first-letter {
+  float: left;
+  font-size: 4.2rem;
+  line-height: 0.8;
+  font-weight: 700;
+  color: #fff;
+  padding: 0.05em 0.1em 0 0;
+  margin-top: 0.05em;
+}
+
+/* Section headings inside text */
+.section-heading {
+  font-family: var(--font-sans);
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  line-height: 1.25;
+}
+
+.section-subheading {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 150%;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  max-width: var(--col-width);
+}
+
+/* ============================================
+   BLOCK: BIG NUMBER / STAT
+   Two flavors:
+   .block-stat   — full standalone block
+   .stat-overlay — flow-positioned stat inside the scrolly-people
+                   sticky container. Always visible (no fade);
+                   the stat number is updated by scrollama.
+   Both share .stat-inner internals.
+   ============================================ */
+.block-stat {
+  padding: 8rem 1.5rem;
+  text-align: center;
+}
+
+.stat-overlay {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--col-wide);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.stat-inner {
+  max-width: var(--col-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--font-sans);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  display: inline-flex;
+  /* Share a baseline between the digit and the " of 12" suffix
+     so they sit on the same line. */
+  align-items: baseline;
+  gap: 0.2em;
+  /* The 1ch digit-slot has ~0.15em of invisible left-padding
+     when the digit is "1" (the narrowest glyph). Nudge the
+     whole group left by half of that so the visible content
+     sits centered instead of slightly right of center. */
+  transform: translateX(-0.08em);
+  /* Equal-width digits so the layout doesn't shift as the value
+     updates (1 -> 9). Inherits to .stat-number-value and
+     .stat-number-total. */
+  font-variant-numeric: tabular-nums;
+  /* Keep "1 of 12" on a single line at every viewport width. */
+  white-space: nowrap;
+}
+
+.stat-number-value {
+  display: inline-block;
+  line-height: 1;
+  /* Reserve a fixed-width slot so the " of 12" suffix stays put
+     as the value updates. Right-align the digit so the slot's
+     spare padding lives on the LEFT (where it's invisible against
+     the centered parent) rather than as a visible gap before
+     "of". */
+  min-width: 1ch;
+  text-align: end;
+}
+
+.stat-number-total {
+  display: inline-block;
+  font-size: 1em;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 150%;
+  max-width: 520px;
+}
+
+.stat-label strong {
+  color: #fff;
+}
+
+.stat-source {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   BLOCK: EXPLAINER CARDS
+   ============================================ */
+.block-explainer {
+  padding: 7rem 1.5rem;
+}
+
+.explainer-inner {
+  max-width: var(--col-wide);
+  margin: 0 auto;
+}
+
+.explainer-inner .section-heading,
+.explainer-inner .section-subheading {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem 1.75rem;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.card-icon {
+  width: 36px;
+  height: 36px;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+
+.card h3 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.card p {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 150%;
+  color: var(--text-muted);
+}
+
+.card p strong {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* ============================================
+   BLOCK: IMAGE - FULL WIDTH
+   ============================================ */
+.block-image-full {
+  padding: 5rem 0;
+}
+
+.block-image-full .image-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.block-image-full .image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-caption {
+  max-width: var(--col-width);
+  margin: 0.75rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.image-caption p {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  line-height: 150%;
+}
+
+.image-caption .credit {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* Image placeholder styling */
+.image-placeholder {
+  background: var(--bg-elevated);
+  border: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 400px;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.placeholder-hint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+
+/* ============================================
+   BLOCK: IMAGE - INLINE (within text column)
+   ============================================ */
+.block-image-inline {
+  padding: 5rem 1.5rem;
+}
+
+.block-image-inline .image-container {
+  margin-bottom: 0;
+}
+
+.block-image-inline .image-placeholder {
+  min-height: 300px;
+  border-radius: 4px;
+}
+
+.block-image-inline .image-caption {
+  padding: 0;
+  margin-top: 0.75rem;
+}
+
+/* ============================================
+   BLOCK: CHART
+   ============================================ */
+.block-chart {
+  padding: 6rem 1.5rem;
+}
+
+.chart-inner {
+  max-width: var(--col-wide);
+  margin: 0 auto;
+}
+
+.chart-inner .section-heading {
+  text-align: left;
+}
+
+.chart-description {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 150%;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  max-width: var(--col-width);
+}
+
+.chart-placeholder {
+  margin: 0 auto;
+}
+
+.chart-frame {
+  background: var(--bg-elevated);
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+/* For embedding iframes (Datawrapper, Flourish) */
+.chart-placeholder iframe {
+  width: 100%;
+  border: none;
+  min-height: 420px;
+}
+
+.chart-note {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+.chart-source {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+/* ============================================
+   BLOCK: PULLQUOTE
+   ============================================ */
+.block-pullquote {
+  padding: 7rem 1.5rem;
+}
+
+.pullquote-inner {
+  max-width: var(--col-width);
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+
+.pullquote-inner::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+  margin: 0 auto 2rem;
+}
+
+.pullquote-inner blockquote p {
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+  font-style: italic;
+  line-height: 1.65;
+  color: #fff;
+}
+
+.pullquote-inner cite {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-style: normal;
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   BLOCK: FOOTER
+   ============================================ */
+.block-footer {
+  padding: 5rem 1.5rem 3rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+
+.footer-inner {
+  max-width: var(--col-width);
+  margin: 0 auto;
+}
+
+.footer-section {
+  margin-bottom: 2.5rem;
+}
+
+.footer-section h3 {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.footer-section p {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+.footer-copyright {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+
+  .block-hero {
+    padding-bottom: 12vh;
+  }
+
+  .block-text {
+    padding: 4.5rem 1.25rem;
+  }
+
+  .block-scrolly-people {
+    padding: 0 1.25rem;
+  }
+
+  .scrolly-sticky {
+    height: 100svh;
+    gap: 1.5rem;
+  }
+
+  .scrolly-steps {
+    margin-top: -100svh;
+  }
+
+  .step {
+    padding: 0 1.25rem 5svh;
+    min-height: 70svh;
+  }
+
+  .step-card {
+    font-size: 0.95rem;
+    padding: 0.85rem 1.1rem;
+  }
+
+  .people-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+
+  .people-custom-svg {
+    width: min(62px, 100%);
+  }
+
+  .block-stat {
+    padding: 6rem 1.25rem;
+  }
+
+  .block-explainer {
+    padding: 5rem 1.25rem;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .block-chart {
+    padding: 4.5rem 1rem;
+  }
+
+  .chart-frame {
+    min-height: 300px;
+  }
+
+  .block-pullquote {
+    padding: 5rem 1.25rem;
+  }
+
+  .image-placeholder {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-headline {
+    font-size: 2rem;
+  }
+
+  .stat-number {
+    font-size: 2.8rem;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================
+   UTILITY: Separator line between blocks
+   Add class "block-separator" to any block for
+   a subtle top border.
+   ============================================ */
+.block-separator::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--border);
+  margin: 0 auto 3rem;
+}
+
+/* ============================================
+   ACCESSIBILITY: reduced motion
+   When the user prefers reduced motion, freeze
+   non-essential animations. JS reads this preference too
+   and adds .is-visible to all fade blocks immediately.
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .scroll-indicator {
+    animation: none;
+  }
+
+  /* Belt-and-suspenders: even if JS doesn't add .is-visible,
+     the fade blocks are revealed under reduced motion. */
+  .js [data-scroll] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

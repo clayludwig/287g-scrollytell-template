@@ -1,0 +1,93 @@
+<!--
+  BLOCK: SCROLLYTELLING - PEOPLE GRID (sticky-overlay interactive)
+
+  Pattern: a sticky graphic stays pinned to the viewport while
+  scrolling text steps pass over it. As each .step crosses 50%
+  of the viewport, scrollama fires onStepEnter and the graphic
+  updates (more figures highlighted, "X of N" counter ticks up).
+
+  This is the canonical newsroom scrollytell pattern — the same
+  shape NYT, Pudding, and Reuters Graphics use.
+
+  Dependencies (already loaded by index.html):
+  - scrollama 3.x (UMD) — IntersectionObserver wrapper, ~3KB gzip
+  - script.js — wires up the .step → graphic state mapping
+
+  How to customize:
+  - Add or remove .step elements to adjust pacing (each step = one
+    visual transition + one paragraph of narrative text)
+  - Edit the <p class="step-card"> copy in each .step
+  - Edit MAX_HIGHLIGHTED in script.js to change the peak count
+  - The denominator in "X of N" auto-derives from .people-item count
+  - Swap the SVG (`assets/person-arms-up.svg`) for any other figure
+    in /assets or your own. Update the figure's `fill="..."` to
+    change accent color.
+
+  Accessibility:
+  - .stat-overlay is aria-live="polite" and only the number changes,
+    so screen readers announce one value per integer change.
+  - .people-gallery is aria-hidden — the figures are decorative; the
+    information is in the stat label and the .step text.
+-->
+<section class="block block-scrolly-people" id="people-scrolly">
+  <div class="scrolly-sticky">
+    <div class="stat-overlay" aria-live="polite" aria-atomic="false">
+      <div class="stat-inner">
+        <span class="stat-number">
+          <span class="stat-number-value">1</span>
+          <span class="stat-number-total"> of 12</span>
+        </span>
+        <span class="stat-label">lorem ipsum dolor sit amet, consectetur adipiscing <strong>elit sed do</strong> eiusmod tempor</span>
+        <span class="stat-source">Source: Lorem ipsum data</span>
+      </div>
+    </div>
+
+    <div class="people-gallery" aria-hidden="true">
+      <figure class="people-item is-highlighted"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+      <figure class="people-item is-hidden"><img src="assets/person-arms-up.svg" alt="" class="people-custom-svg"></figure>
+    </div>
+  </div>
+
+  <div class="scrolly-steps">
+    <div class="step" data-step="0">
+      <p class="step-card">Lorem ipsum dolor sit amet, consectetur adipiscing elit. The opening beat — set up the question.</p>
+    </div>
+    <div class="step" data-step="1">
+      <p class="step-card">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div class="step" data-step="2">
+      <p class="step-card">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+    </div>
+    <div class="step" data-step="3">
+      <p class="step-card">Nisi ut aliquip ex ea commodo consequat — a tighter framing of the trend.</p>
+    </div>
+    <div class="step" data-step="4">
+      <p class="step-card">Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
+    </div>
+    <div class="step" data-step="5">
+      <p class="step-card">Cillum dolore eu fugiat nulla pariatur — the midpoint reveal.</p>
+    </div>
+    <div class="step" data-step="6">
+      <p class="step-card">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.</p>
+    </div>
+    <div class="step" data-step="7">
+      <p class="step-card">Deserunt mollit anim id est laborum sed ut perspiciatis unde omnis.</p>
+    </div>
+    <div class="step" data-step="8">
+      <p class="step-card">Iste natus error sit voluptatem accusantium — the punchline lands here.</p>
+    </div>
+    <div class="step" data-step="9">
+      <p class="step-card">Doloremque laudantium, totam rem aperiam — let the punchline sit.</p>
+    </div>
+  </div>
+</section>

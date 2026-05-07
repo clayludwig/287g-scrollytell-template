@@ -1,0 +1,43 @@
+<!--
+  BLOCK: CHART
+  Container for a data visualization. Supports any of:
+  - Datawrapper / Flourish / Observable iframe (see commented option below)
+  - Static <img>
+  - D3 / Chart.js mount point (give it an id)
+
+  Replace the .chart-frame placeholder with your chart.
+
+  The container is sized to .col-wide (960px); the chart description
+  + note are constrained to the body-text column width for readability.
+-->
+<section class="block block-chart" data-scroll="fade-up">
+  <div class="chart-inner">
+    <h2 class="section-heading">Chart title goes here</h2>
+    <p class="chart-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Brief description of what the chart shows.</p>
+    <div class="chart-placeholder">
+
+      <!-- OPTION A: placeholder (replace) -->
+      <div class="chart-frame">
+        <span>Chart placeholder</span>
+        <span class="placeholder-hint">Embed Datawrapper, Flourish, D3, or an image here</span>
+      </div>
+
+      <!-- OPTION B: Datawrapper iframe (uncomment + replace) -->
+      <!--
+      <iframe title="Chart" aria-label="Chart"
+        src="https://datawrapper.dwcdn.net/XXXX/1/"
+        scrolling="no" frameborder="0"
+        style="width: 0; min-width: 100% !important;"
+        height="420"></iframe>
+      -->
+
+      <!-- OPTION C: static image (uncomment + replace) -->
+      <!--
+      <img src="assets/chart-1.png" alt="Description of the chart">
+      -->
+
+    </div>
+    <p class="chart-note">Note: Chart note or methodology details go here.</p>
+    <p class="chart-source">Source: Lorem ipsum data</p>
+  </div>
+</section>

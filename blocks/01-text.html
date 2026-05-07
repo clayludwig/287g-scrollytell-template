@@ -1,0 +1,34 @@
+<!--
+  BLOCK: TEXT
+  Narrow-column narrative prose. Use for lede, nutgraph, and any
+  body copy between visual blocks. Multiple flavors below — copy
+  the one you need.
+
+  Tokens:
+  - .text-dropcap          — large drop cap on the first letter (use on the lede only)
+  - .section-heading       — H2 inside a text block
+  - data-scroll="fade-up"  — the scroll-driven fade engine fades + lifts this block
+-->
+
+<!-- LEDE: drop cap, no heading -->
+<section class="block block-text" data-scroll="fade-up">
+  <div class="text-inner">
+    <p class="text-dropcap">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </div>
+</section>
+
+<!-- NUTGRAPH: no heading, no drop cap -->
+<section class="block block-text" data-scroll="fade-up">
+  <div class="text-inner">
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+  </div>
+</section>
+
+<!-- BODY SECTION: H2 heading + multiple paragraphs -->
+<section class="block block-text" data-scroll="fade-up">
+  <div class="text-inner">
+    <h2 class="section-heading">A subhead introducing the next idea</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  </div>
+</section>

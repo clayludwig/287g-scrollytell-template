@@ -1,0 +1,43 @@
+<!--
+  BLOCK: EXPLAINER CARDS
+  Side-by-side definition cards for key terms. Best for 2-4 cards.
+  More than 4 and the grid gets cramped on tablet widths.
+
+  Anatomy:
+  - .section-heading + .section-subheading at top, both centered
+  - .card-grid        — auto-fit grid, wraps gracefully
+  - .card             — each card has icon + h3 + paragraph
+  - .card-icon        — 36x36 SVG slot, uses currentColor with --accent
+  - <strong> in .card p highlights status/key phrase in accent color
+
+  Cards stagger their fade-in via a JS offset (50ms each).
+-->
+<section class="block block-explainer" data-scroll="fade-up">
+  <div class="explainer-inner">
+    <h2 class="section-heading">Section heading goes here</h2>
+    <p class="section-subheading">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <div class="card-grid">
+      <div class="card" data-scroll="fade-up">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h3>Term One</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor. <strong>Status note.</strong></p>
+      </div>
+      <div class="card" data-scroll="fade-up">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4.5v15m7.5-7.5h-15"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <h3>Term Two</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip. <strong>Status note.</strong></p>
+      </div>
+      <div class="card" data-scroll="fade-up">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        </div>
+        <h3>Term Three</h3>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. <strong>Status note.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
