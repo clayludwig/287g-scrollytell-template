@@ -66,7 +66,7 @@ See `blocks/README.md` for snippets and `design.md` for anatomy + rules.
 
 ## Credits
 
-Designed and built by [Clay Ludwig](https://github.com/clayludwig) and Ela Jalil. Originally developed for a Capital News Service investigation at the University of Maryland Philip Merrill College of Journalism.
+Designed and built by [Clay Ludwig](https://github.com/clayludwig) and [Ela Jalil](https://github.com/ejalil). Originally developed for a Capital News Service investigation at the University of Maryland Philip Merrill College of Journalism.
 
 ## License
 
